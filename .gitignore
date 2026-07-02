@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+instance/
+.env
+n0ts3cur3.db

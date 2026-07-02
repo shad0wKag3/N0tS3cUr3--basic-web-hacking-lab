@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>N0tS3cUr3 - Dashboard</title>
+</head>
+<body>
+    <h2>Selamat Datang, <span>{{ username }}</span>!</h2>
+    <a href="/logout">Logout</a>
+    <hr>
+
+    <h3>Buat Catatan Baru</h3>
+    <form method="POST" action="/dashboard{% if token %}?token={{ token }}{% endif %}">
+        <input type="text" name="title" placeholder="Judul Catatan" required><br><br>
+        <textarea name="content" placeholder="Isi Catatan Rahasia..." required></textarea><br><br>
+        <button type="submit">Simpan Catatan</button>
+    </form>
+
+    <hr>
+    <h3>Daftar Catatan Anda</h3>
+    <ul>
+        {% for note in notes %}
+            <li>
+                <strong>{{ note.title }}</strong><br>
+                
+                {% if secure_mode %}
+                    <p>{{ note.content }}</p>
+                {% else %}
+                    <p>{{ note.content | safe }}</p> 
+                {% endif %}
+            </li>
+        {% else %}
+            <li>Belum ada catatan.</li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromUrl = urlParams.get('token');
+        if (tokenFromUrl) {
+            localStorage.setItem('token', tokenFromUrl);
+        }
+        console.log("XSS Cek - Token di localStorage: ", localStorage.getItem('token') || "KOSONG/AMAN");
+    </script>
+</body>
+</html>
